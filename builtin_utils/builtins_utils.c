@@ -25,15 +25,15 @@ void ft_unset_env(t_env **head_ref, char *env_variable)
 
 	printf("check unset_env\n");
 
-	search_node = get_env_node(*head_ref, env_variable);
+	search_node = ft_get_env_node(*head_ref, env_variable);
 	if (search_node == NULL)
 		return;
-	previous_node = find_previous_node(*head_ref, search_node);
+	previous_node = ft_find_previous_node(*head_ref, search_node);
 	if (search_node == *head_ref)
 		*head_ref = (*head_ref)->next;
 	else
 		previous_node->next = search_node->next;
-	free(search_node->string);
+	free(search_node->value);
 	free(search_node);
 }
 
@@ -44,25 +44,25 @@ void ft_unset_export(t_env **head_ref, char *env_variable)
 
 	printf("check unset_export\n");
 
-	search_node = get_env_node(*head_ref, env_variable);
+	search_node = ft_get_env_node(*head_ref, env_variable);
 	if (search_node == NULL)
 		return;
-	previous_node = find_previous_node(*head_ref, search_node);
+	previous_node = ft_find_previous_node(*head_ref, search_node);
 	if (search_node == *head_ref)
 		*head_ref = (*head_ref)->next;
 	else
 		previous_node->next = search_node->next;
-	free(search_node->string);
+	free(search_node->value);
 	free(search_node);
 }
 
 t_env *ft_get_env_node(t_env *head_ref, char *search)
 {
-	int n;
 	t_env *current;
 
 	if (!(head_ref))
 		return NULL;
+	current = head_ref;
 	while (current->next != NULL)
 	{
 		if (!ft_strcmp(current->var, search))
@@ -72,14 +72,19 @@ t_env *ft_get_env_node(t_env *head_ref, char *search)
 	return (NULL);
 }
 
-void ft_change_string_at_envPath(t_ms *depot, char *search, char *new_string)
-{
-	t_env *node;
-	char *new_path_string;
-
-	node = ft_get_env_node(depot, search);
-	node->value = ft_strdup(new_string);
-}
+//void ft_change_string_at_envPath(t_env *depot, char *search, char *new_string)
+//{
+//	t_env *node;
+//	char *new_path_string;
+//
+//	new_path_string = ft_strjoin(search, new_string);
+//	node = ft_get_env_node(depot->ms_env, search);
+//	free(node->string);
+//	node->string = NULL;
+//	node->string = malloc(sizeof(char) * (ft_strlen(new_path_string) + 1));
+//	node->string[ft_strlen(new_path_string)] = '\0';
+//	node->string = new_path_string;
+//}
 char *ft_strncpy(char *source, char c)
 {
 	int 	i;
@@ -109,27 +114,19 @@ char *ft_strncpy(char *source, char c)
 	return (new_string);
 }
 
-int ft_strcmp(const char *s1, const char *s2)
-{
-	while (*s1 && (*s1 == *s2)) {
-		s1++;
-		s2++;
-	}
-	return (*(const unsigned char *)s1 - *(const unsigned char *)s2);
-}
-
 char *ft_get_new_path(t_env *head_ref)
 {
-	char *s;
-	int i;
 	int len;
-	char *tmp;
+	char *new_path;
 	t_env *node;
-
 	node = ft_get_env_node(head_ref, "PWD");
 	len = ft_strlen(node->value);
-	while (node->value)
-	return (s);
+	while (node->value[len - 1] != '/')
+		len--;
+	new_path = malloc(sizeof(char) * (len + 1));
+	ft_strlcpy(new_path, node->value, len);
+	new_path[len] = '\0';
+		return (new_path);
 }
 
 //char	*get_folder_path(t_ms *depot)
